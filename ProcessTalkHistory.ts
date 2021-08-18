@@ -4,9 +4,10 @@ import {
     STAMP_EMOTICON,
     IMAGE,
     VIDEO,
-} from "./metaCharacters";
+} from "./MetaCharacters";
 import kuromoji from "kuromoji";
 const TinySegmenter = require("tiny-segmenter");
+
 
 type DataDict = {
     date: Array<string>,
@@ -14,6 +15,7 @@ type DataDict = {
     name: Array<string>,
     message: Array<string>
 }
+
 
 type WordChain = {
     [key: string]: {
@@ -24,20 +26,22 @@ type WordChain = {
 };
 
 
-
 class ProcessTalkHistory {
     opponentName: string = "";
     protected dataDict?: DataDict;
-    private opponentMessageList?: Array<string>;
-    private myMessageList?: Array<string>;
+    private opponentMessageList: Array<string> = [];
+    private myMessageList: Array<string> = [];
     private tinySegmenter = new TinySegmenter();
     protected opponentMarkovChain?: WordChain;
     protected myMarkovChain?: WordChain;
 
 
-    constructor(filename: string) {
-        const data: string = "hello";
+    constructor(filename: string, data_: string) {
+        this.opponentName = "Alice";
+        const data = data_;
+
         this.makeDataDict(data);
+        console.log(this.dataDict);
         this.getMessageList();
         this.run();
     }
@@ -64,7 +68,7 @@ class ProcessTalkHistory {
         let message: string = "";
 
         for (var datum of data.split("\n\n").slice(1)) {     // slice[1:]: remove header
-            if (datum == "") continue;
+            if (datum === "") continue;
 
             const lineList = datum.split("\n");
             if (lineList[0] != "")
@@ -72,8 +76,8 @@ class ProcessTalkHistory {
 
             for (var line of lineList.slice(1)) {       // slice[1:]: remove date
                 try {
-                    // if line == [time, name, message]
-                    if (line.split("\t").length == 3) {
+                    // if line === [time, name, message]
+                    if (line.split("\t").length === 3) {
                         time = line.split("\t")[0];
                         name = line.split("\t")[1];
                         message = line.split("\t")[2];
@@ -98,7 +102,7 @@ class ProcessTalkHistory {
 
 
     getMessageList() {
-        if (this.dataDict && this.opponentMessageList && this.myMessageList) {
+        if (this.dataDict) {
             for (var i = 0; i < this.dataDict.name.length; i++) {
                 let name = this.dataDict.name[i];
                 let message = this.dataDict.message[i];
@@ -136,16 +140,18 @@ class ProcessTalkHistory {
 
         if (messageList) {
             for (var message of messageList) {
-                let tmpList = ["@"];
-                for (var word of this.tinySegmenter.segment(message)) {
-                    tmpList.push(word);
+                if (message !== "NONE"){
+                    let tmpList = ["@"];        // @ as beginning of sentence
+                    for (var word of this.tinySegmenter.segment(message)) {
+                        tmpList.push(word);
 
-                    if (tmpList.length > 3)
-                        tmpList = tmpList.slice(1);
-                    else if (tmpList.length < 3)
-                        continue;
+                        if (tmpList.length > 3)           // 3 words dict
+                            tmpList = tmpList.slice(1);
+                        else if (tmpList.length < 3)
+                            continue;
 
-                    dict = this.addWordChain(dict, tmpList)
+                        dict = this.addWordChain(dict, tmpList)
+                    }
                 }
             }
             return dict;
@@ -154,7 +160,10 @@ class ProcessTalkHistory {
 
 
     run() {
+        console.log(this.opponentMessageList);
         this.opponentMarkovChain = this.makeMarkovChain(this.opponentMessageList);
         this.myMarkovChain = this.makeMarkovChain(this.myMessageList);
     }
 }
+
+export default ProcessTalkHistory;
