@@ -60,7 +60,8 @@ class GenerateMessage extends ProcessTalkHistory {
             }
         }
 
-        return wordOutList.join("");
+        const wordOut = wordOutList.join("");
+        return wordOut.slice(0, wordOut.indexOf("^"));     // return words til ^ got found
     }
 
 
