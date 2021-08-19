@@ -6,7 +6,7 @@ import {
     VIDEO,
 } from "./MetaCharacters";
 import kuromoji from "kuromoji";
-const TinySegmenter = require("tiny-segmenter");
+const TinySegmenter = require("tiny-segmenter");     // on react-native
 
 
 type DataDict = {
@@ -31,7 +31,7 @@ class ProcessTalkHistory {
     protected dataDict?: DataDict;
     private opponentMessageList: Array<string> = [];
     private myMessageList: Array<string> = [];
-    private tinySegmenter = new TinySegmenter();
+    private tinySegmenter = new TinySegmenter();        // on react-native
     protected opponentMarkovChain?: WordChain;
     protected myMarkovChain?: WordChain;
 
@@ -41,9 +41,8 @@ class ProcessTalkHistory {
         const data = data_;
 
         this.makeDataDict(data);
-        console.log(this.dataDict);
         this.getMessageList();
-        this.run();
+        // this.run();
     }
 
 
@@ -71,7 +70,7 @@ class ProcessTalkHistory {
             if (datum === "") continue;
 
             const lineList = datum.split("\n");
-            if (lineList[0] != "")
+            if (lineList[0] !== "")
                 date = lineList[0];
 
             for (var line of lineList.slice(1)) {       // slice[1:]: remove date
@@ -138,10 +137,45 @@ class ProcessTalkHistory {
     makeMarkovChain(messageList?: Array<string>) {
         let dict: WordChain = {};
 
+        // on react
+        // if (messageList) {
+        //     kuromoji.builder({ dicPath: "/dict" }).build((err, tokenizer) => {
+        //         if (err) {
+        //         } else {
+        //             for (var message of messageList) {
+        //                 if (message !== "NONE") {
+        //                     let tmpList = ["@"];        // @ as beginning of sentence
+        //                     const tokens = tokenizer.tokenize(message);
+        //
+        //                     for (var token of tokens) {
+        //                         const word = token.surface_form;
+        //
+        //                         console.log("word: ", word);
+        //
+        //                         tmpList.push(word);
+        //
+        //                         if (tmpList.length > 3)           // 3 words dict
+        //                             tmpList = tmpList.slice(1);
+        //                         else if (tmpList.length < 3)
+        //                             continue;
+        //
+        //                         dict = this.addWordChain(dict, tmpList)
+        //                     }
+        //                 }
+        //             }
+        //             return dict;
+        //         }
+        //     })
+        // }
+
+
+
+        // on react-native
         if (messageList) {
             for (var message of messageList) {
                 if (message !== "NONE"){
                     let tmpList = ["@"];        // @ as beginning of sentence
+
                     for (var word of this.tinySegmenter.segment(message)) {
                         tmpList.push(word);
 
@@ -160,7 +194,6 @@ class ProcessTalkHistory {
 
 
     run() {
-        console.log(this.opponentMessageList);
         this.opponentMarkovChain = this.makeMarkovChain(this.opponentMessageList);
         this.myMarkovChain = this.makeMarkovChain(this.myMessageList);
     }
