@@ -36,9 +36,15 @@ class ProcessTalkHistory {
     protected myMarkovChain?: WordChain;
 
 
-    constructor(filename: string, data_: string) {
-        this.opponentName = "Alice";
-        const data = data_;
+    // constructor(filename: string, data_: string) {       // DEBUG:
+        // const data = data_;
+    constructor(filename: string) {
+
+        // FIXME:
+        // reading file...
+        const data:string = "contents of .txt here";
+        this.opponentName = "Alice";        // get opponent name from filename
+        // FIXME:
 
         this.makeDataDict(data);
         this.getMessageList();

@@ -1,5 +1,5 @@
 import ProcessTalkHistory from "./ProcessTalkHistory";
-import {data} from "./data";
+// import {data} from "./data";     // DEBUG:
 
 // TODO: fix redundant type
 type WordChain = {
@@ -18,7 +18,9 @@ type WordChain = {
 
 class GenerateMessage extends ProcessTalkHistory {
     constructor(filename: string) {
-        super(filename, data);
+        super(filename);
+
+        // super(filename, data);        // DEBUG:
     }
 
 
