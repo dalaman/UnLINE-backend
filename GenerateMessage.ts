@@ -15,17 +15,20 @@ type WordChain = {
 }
 ;
 
+
 class GenerateMessage extends ProcessTalkHistory {
     constructor(filename: string) {
         super(filename, data);
     }
 
+
     // TODO: fix type any
     wordChoise(dict: any) {
         const idx = Math.floor(Math.random() * Object.keys(dict).length);
         const key = Object.keys(dict)[idx];
-        return dict[key];
+        return key;
     }
+
 
     generateBase(dict?: WordChain) {
         let success = false;        // flag
@@ -53,7 +56,7 @@ class GenerateMessage extends ProcessTalkHistory {
                     w2 = w3;
                 }
             }catch(err){
-                console.log(err);
+                console.log("err: ", err);
             }
         }
 
@@ -62,7 +65,6 @@ class GenerateMessage extends ProcessTalkHistory {
 
 
     getGeneratedMessage(sender: string): string {
-        console.log(this.opponentMarkovChain);
         if (sender === this.opponentName)
             return this.generateBase(this.opponentMarkovChain);
         else

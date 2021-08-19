@@ -41,7 +41,6 @@ class ProcessTalkHistory {
         const data = data_;
 
         this.makeDataDict(data);
-        console.log(this.dataDict);
         this.getMessageList();
         this.run();
     }
@@ -140,7 +139,7 @@ class ProcessTalkHistory {
 
         if (messageList) {
             for (var message of messageList) {
-                if (message !== "NONE"){
+                if (message !== "NONE^"){       // if not image, video...
                     let tmpList = ["@"];        // @ as beginning of sentence
                     for (var word of this.tinySegmenter.segment(message)) {
                         tmpList.push(word);
@@ -160,7 +159,6 @@ class ProcessTalkHistory {
 
 
     run() {
-        console.log(this.opponentMessageList);
         this.opponentMarkovChain = this.makeMarkovChain(this.opponentMessageList);
         this.myMarkovChain = this.makeMarkovChain(this.myMessageList);
     }
