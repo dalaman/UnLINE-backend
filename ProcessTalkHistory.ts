@@ -38,12 +38,13 @@ class ProcessTalkHistory {
 
     // constructor(filename: string, data_: string) {       // DEBUG:
         // const data = data_;
-    constructor(filename: string) {
+    constructor(talkData: string) {
 
         // FIXME:
         // reading file...
-        const data:string = "contents of .txt here";
-        this.opponentName = "Alice";        // get opponent name from filename
+        const data:string = talkData;
+        const firstLine:string = talkData.split("\n")[0];
+        this.opponentName = firstLine.replace(HEADER_PREFIX, "").replace(HEADER_SUFFIX, "");
         // FIXME:
 
         this.makeDataDict(data);

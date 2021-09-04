@@ -17,8 +17,8 @@ type WordChain = {
 
 
 class GenerateMessage extends ProcessTalkHistory {
-    constructor(filename: string) {
-        super(filename);
+    constructor(talkData: string) {
+        super(talkData);
 
         // super(filename, data);        // DEBUG:
     }
